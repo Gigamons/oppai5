@@ -137,7 +137,7 @@ func (pp *PPv2) ppv2x(aimStars, speedStars float64,
 		lowArBonus := 0.01 * (8.0 - float64(mapstats.AR))
 
 		if (mods & ModsHD) != 0 {
-			lowArBonus *= 2.0
+			lowArBonus *= 1.8
 		}
 
 		arBonus += lowArBonus
@@ -158,6 +158,10 @@ func (pp *PPv2) ppv2x(aimStars, speedStars float64,
 		pp.Aim *= 1.45 * lengthBonus
 	}
 
+	if (mods & ModsAP) != 0 {
+		pp.Aim *= 0.85
+	}
+
 	accBonus := 0.5 + accuracy/2.0
 	odBonus := float64(0.98 + (mapstats.OD*mapstats.OD)/2500.0)
 
@@ -172,28 +176,37 @@ func (pp *PPv2) ppv2x(aimStars, speedStars float64,
 	pp.Speed *= accBonus
 	pp.Speed *= odBonus
 
+	if (mods & ModsHD) != 0 {
+		pp.Speed *= 1.02
+	}
+
+	if (mods & ModsRX) != 0 {
+		pp.Speed *= 0.85
+	}
+
 	/* acc pp ---------------------------------------------- */
 	pp.Acc = pow(1.52163, float64(mapstats.OD)) *
 		pow(realAcc, 24.0) * 2.83
 
 	pp.Acc *= math.Min(1.15, pow(float64(ncircles)/1000.0, 0.3))
 
-	if (mods & ModsHD) != 0 {
-		pp.Acc *= 1.02
+	if (mods & ModsFL) != 0 {
+		pp.Acc *= 1.05
 	}
 
-	if (mods & ModsFL) != 0 {
-		pp.Acc *= 1.02
+	if (mods & ModsEZ) != 0 {
+		pp.Acc *= 1.20
 	}
+
 	/* total pp -------------------------------------------- */
 	finalMultiplier := 1.12
 
 	if (mods & ModsNF) != 0 {
-		finalMultiplier *= 0.90
+		finalMultiplier *= 0.80
 	}
 
 	if (mods & ModsSO) != 0 {
-		finalMultiplier *= 0.95
+		finalMultiplier *= 0.90
 	}
 
 	pp.Total = pow(
